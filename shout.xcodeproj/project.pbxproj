@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		103CB3A620EEA1C8005BAF2E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103CB3A520EEA1C8005BAF2E /* AppDelegate.swift */; };
-		103CB3A820EEA1C8005BAF2E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103CB3A720EEA1C8005BAF2E /* ViewController.swift */; };
+		103CB3A820EEA1C8005BAF2E /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103CB3A720EEA1C8005BAF2E /* HomeViewController.swift */; };
 		103CB3AB20EEA1C8005BAF2E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 103CB3A920EEA1C8005BAF2E /* Main.storyboard */; };
 		103CB3AE20EEA1C8005BAF2E /* shout.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 103CB3AC20EEA1C8005BAF2E /* shout.xcdatamodeld */; };
 		103CB3B020EEA1C8005BAF2E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 103CB3AF20EEA1C8005BAF2E /* Assets.xcassets */; };
@@ -17,6 +17,9 @@
 		103CB3BC20EEA1EF005BAF2E /* BFTransmitter.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 103CB3BA20EEA1EF005BAF2E /* BFTransmitter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		103CB3BF20EEA206005BAF2E /* Core.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103CB3BE20EEA206005BAF2E /* Core.swift */; };
 		103CB3C120EEA86C005BAF2E /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103CB3C020EEA86C005BAF2E /* ChatMessage.swift */; };
+		103CB3C320EECEC9005BAF2E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103CB3C220EECEC9005BAF2E /* SettingsViewController.swift */; };
+		103CB3C520EECEFD005BAF2E /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103CB3C420EECEFD005BAF2E /* ChatViewController.swift */; };
+		103CB3C720EECF84005BAF2E /* EnableBluetoothViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103CB3C620EECF84005BAF2E /* EnableBluetoothViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -36,7 +39,7 @@
 /* Begin PBXFileReference section */
 		103CB3A220EEA1C8005BAF2E /* shout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = shout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		103CB3A520EEA1C8005BAF2E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		103CB3A720EEA1C8005BAF2E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		103CB3A720EEA1C8005BAF2E /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		103CB3AA20EEA1C8005BAF2E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		103CB3AD20EEA1C8005BAF2E /* shout.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = shout.xcdatamodel; sourceTree = "<group>"; };
 		103CB3AF20EEA1C8005BAF2E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -45,6 +48,9 @@
 		103CB3BA20EEA1EF005BAF2E /* BFTransmitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BFTransmitter.framework; sourceTree = "<group>"; };
 		103CB3BE20EEA206005BAF2E /* Core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core.swift; sourceTree = "<group>"; };
 		103CB3C020EEA86C005BAF2E /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
+		103CB3C220EECEC9005BAF2E /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		103CB3C420EECEFD005BAF2E /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		103CB3C620EECF84005BAF2E /* EnableBluetoothViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableBluetoothViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,13 +87,16 @@
 			children = (
 				103CB3BE20EEA206005BAF2E /* Core.swift */,
 				103CB3A520EEA1C8005BAF2E /* AppDelegate.swift */,
-				103CB3A720EEA1C8005BAF2E /* ViewController.swift */,
+				103CB3A720EEA1C8005BAF2E /* HomeViewController.swift */,
 				103CB3A920EEA1C8005BAF2E /* Main.storyboard */,
 				103CB3AF20EEA1C8005BAF2E /* Assets.xcassets */,
 				103CB3B120EEA1C8005BAF2E /* LaunchScreen.storyboard */,
 				103CB3B420EEA1C9005BAF2E /* Info.plist */,
 				103CB3AC20EEA1C8005BAF2E /* shout.xcdatamodeld */,
+				103CB3C620EECF84005BAF2E /* EnableBluetoothViewController.swift */,
+				103CB3C420EECEFD005BAF2E /* ChatViewController.swift */,
 				103CB3C020EEA86C005BAF2E /* ChatMessage.swift */,
+				103CB3C220EECEC9005BAF2E /* SettingsViewController.swift */,
 			);
 			path = shout;
 			sourceTree = "<group>";
@@ -164,11 +173,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				103CB3A820EEA1C8005BAF2E /* ViewController.swift in Sources */,
+				103CB3A820EEA1C8005BAF2E /* HomeViewController.swift in Sources */,
 				103CB3BF20EEA206005BAF2E /* Core.swift in Sources */,
+				103CB3C720EECF84005BAF2E /* EnableBluetoothViewController.swift in Sources */,
 				103CB3C120EEA86C005BAF2E /* ChatMessage.swift in Sources */,
+				103CB3C520EECEFD005BAF2E /* ChatViewController.swift in Sources */,
 				103CB3A620EEA1C8005BAF2E /* AppDelegate.swift in Sources */,
 				103CB3AE20EEA1C8005BAF2E /* shout.xcdatamodeld in Sources */,
+				103CB3C320EECEC9005BAF2E /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
