@@ -99,8 +99,8 @@
 				103CB3AC20EEA1C8005BAF2E /* shout.xcdatamodeld */,
 				103CB3C620EECF84005BAF2E /* EnableBluetoothViewController.swift */,
 				103CB3C020EEA86C005BAF2E /* ChatMessage.swift */,
-				103CB3C220EECEC9005BAF2E /* SettingsViewController.swift */,
 				103CB3F020EF19EC005BAF2E /* ChatViewController.swift */,
+				103CB3C220EECEC9005BAF2E /* SettingsViewController.swift */,
 			);
 			path = shout;
 			sourceTree = "<group>";

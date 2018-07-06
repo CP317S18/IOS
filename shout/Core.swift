@@ -27,13 +27,14 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
         return self.connectedDevices
     }
     
-    //fileprivate static let instance = BluetoothClient()
+    fileprivate static let instance = BluetoothClient()
     
-    /*public static func getInstance() -> BluetoothClient{
+    public static func getInstance() -> BluetoothClient{
         return self.instance
-    }*/
-    
-    public required init(coder aDecoder: NSCoder){
+    }
+        
+    public required override init(){
+        print("Initalizing Bluetooth Client")
         self.transmitter = BFTransmitter(apiKey: "ec174e51-a4ab-4e01-9908-fe53b2833622")
         self.messsageReceiveDelegates = Array()
         self.connectionDelegates = Array()
@@ -43,11 +44,11 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
         super.init()
         self.transmitter.delegate = self
         self.transmitter.isBackgroundModeEnabled = true
-    
+        self.start()
     }
     
     public func start(){
-        print("Transmitter Started")
+        print("Transmitter Starting from init")
         self.transmitter.delegate = self
         self.transmitter.start();
     }
@@ -61,7 +62,6 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
     }
     
     public func transmitter(_ transmitter: BFTransmitter, didReceive dictionary: [String : Any]?, with data: Data?, fromUser user: String, packetID: String, broadcast: Bool, mesh: Bool) {
-        print("Recieved Dictionary")
         let message : ChatMessage = ChatMessage(dictionary: dictionary!, date:Date())
         messsageReceiveDelegates.forEach { delegate in
             delegate.onMessageReceived(message: message)
@@ -69,7 +69,6 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
     }
     
     public func transmitter(_ transmitter: BFTransmitter, didDetectConnectionWithUser user: String) {
-        print("Device Connected")
         self.connectedDevices += 1
         connectionDelegates.forEach { delegate in
             delegate.deviceConnected()
@@ -134,7 +133,6 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
         }
         catch let err as NSError {
             print("Send Message Error: \(err)")
-            failedMessages.append(message)
         }
         print("sent Message")
     }
@@ -145,7 +143,6 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
 public protocol MessageRecievedDelegate{
     func onMessageReceived(message:ChatMessage)
 }
-
 public protocol ConnectionDelegate{
     func deviceConnected()
     func deviceLost()

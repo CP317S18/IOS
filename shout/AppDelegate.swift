@@ -8,15 +8,23 @@
 
 import UIKit
 import CoreData
-
+import BFTransmitter
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
+class AppDelegate: UIResponder, UIApplicationDelegate{
+    
     var window: UIWindow?
-
-
+    var client: BluetoothClient
+    
+    required override init() {
+        print("App Delegate Init Called")
+        client = BluetoothClient()
+        super.init()
+    }
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        print("App Delegate, about to launch init")
+        client.start()
         return true
     }
 
