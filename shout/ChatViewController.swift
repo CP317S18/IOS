@@ -11,18 +11,15 @@ import Foundation
 
 class ChatViewController: UIViewController, MessageRecievedDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
-    var client: BluetoothClient
+    var client: BluetoothClient = BluetoothClient.getInstance()
     
     
     //User Defaults to persist Username
     let userDefaults = UserDefaults.standard
     var username: String?
 
+    
     // Initialize Bluetooth Client
-    required init?(coder aDecoder: NSCoder) {
-        client = BluetoothClient(coder: aDecoder)
-        super.init(coder: aDecoder)
-    }
     
     // Outlets attached to StoryBoard
     @IBOutlet var heightConstraint: NSLayoutConstraint!
@@ -50,7 +47,6 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
         message.type = messageType.message.rawValue
         
         client.sendMessage(message)
-        
          
         self.messageField.text = ""
         self.messages.add(message)
@@ -85,7 +81,6 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
         super.viewDidLoad()
         
         //Initial Bluetooth Client Setup
-        client.start()
         client.register(messageDelegate: self)
         
         //Fetches username from userdefaults
@@ -184,7 +179,7 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
     
     
     func onMessageReceived(message: ChatMessage) {
-        print("message recieived")
+        print("Delegate Message recieived")
         print(message.content)
         self.messages.add(message)
         self.addRowToTable()

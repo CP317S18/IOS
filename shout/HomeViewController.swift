@@ -9,9 +9,8 @@
 import UIKit
 
 class HomeViewController: UIViewController, ConnectionDelegate, UITextFieldDelegate {
-    var client: BluetoothClient
     
-    
+    var client: BluetoothClient = BluetoothClient.getInstance()
     //User Defaults to persist Username
     let userDefaults = UserDefaults.standard
     
@@ -46,33 +45,19 @@ class HomeViewController: UIViewController, ConnectionDelegate, UITextFieldDeleg
         }
     }
     
-    // Initialize Bluetooth Client
-    required init?(coder aDecoder: NSCoder) {
-        client = BluetoothClient(coder: aDecoder)
-        super.init(coder: aDecoder)
-    }
-    
     //On Load Function
     override open func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         print("View Did Load")
         
-        client.start()
+        client = BluetoothClient.getInstance()
         client.register(connectionDelegate: self)
-        
         // Set shout to connected count
         self.shoutCount.text = "\(client.getConnectedCount())"
         
         //give usernameField a delegate so you can close keyboard on return
         self.usernameField.delegate = self
-        
-        //Create Instance of User Defaults for loading username
-        let savedUsername = userDefaults.object(forKey: "username") as? String
-        if (savedUsername != nil){
-            usernameField.text = savedUsername
-        }
-     
     }
     
     // Close Keyboard on username return
@@ -87,11 +72,11 @@ class HomeViewController: UIViewController, ConnectionDelegate, UITextFieldDeleg
     }
     
     func deviceConnected() {
-        print("Device Connected")
+        print("Delegate Device Connected")
     }
     
     func deviceLost() {
-        print("Lost Device")
+        print("Delegate Lost Device")
         
     }
     
