@@ -8,6 +8,8 @@
 
 import BFTransmitter
 
+
+
 open class BluetoothClient: NSObject, BFTransmitterDelegate {
     
     fileprivate var transmitter: BFTransmitter
@@ -15,6 +17,15 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
     fileprivate var connectionDelegates: Array<ConnectionDelegate>
     fileprivate var connectedDevices: Int
     fileprivate var isStarted: Bool
+    fileprivate var failedMessages: Array<ChatMessage>
+    
+    fileprivate var usernameKey = "username"
+    fileprivate var contentKey = "content"
+    fileprivate var typeKey = "type"
+    
+    public func getConnectedCount() -> Int{
+        return self.connectedDevices
+    }
     
     //fileprivate static let instance = BluetoothClient()
     
@@ -28,6 +39,7 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
         self.connectionDelegates = Array()
         self.connectedDevices = 0
         self.isStarted = false
+        self.failedMessages = Array()
         super.init()
         self.transmitter.delegate = self
         self.transmitter.isBackgroundModeEnabled = true
@@ -98,12 +110,33 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
     }
     
     
+    
    /* public func unRegister(connectionDelegate:ConnectionDelegate){
         if let index = connectionDelegates.index(where:{$0 == connectionDelegate}) {
             connectionDelegates.remove(at: index)
         }
     }*/
     
+    open func sendMessage(_ message: ChatMessage){
+        var dictionary: Dictionary<String, Any>
+        var options: BFSendingOption
+        
+        options = [.fullTransmission, .broadcastReceiver]
+        
+        dictionary = [
+            usernameKey: message.username,
+            contentKey: message.content,
+            typeKey: message.type
+        ]
+        
+        do {
+            try self.transmitter.send(dictionary, toUser: nil, options: options)
+        }
+        catch let err as NSError {
+            print("Error: \(err)")
+        }
+        print("sent Message")
+    }
     
     
 }
