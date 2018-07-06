@@ -201,14 +201,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Ulr-wv-7ak"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Shout" id="aqv-Lg-rVb">
-                        <barButtonItem key="backBarButtonItem" title="Back" id="HWO-nE-jWz"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Shout" id="aqv-Lg-rVb"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="heightConstraint" destination="piB-mz-bz1" id="HcP-Bn-fOh"/>
                         <outlet property="messageField" destination="jc9-EW-HtM" id="4OL-C1-JRa"/>
                         <outlet property="messageTableView" destination="DQ2-yi-5Eb" id="8Hg-nl-GeV"/>
+                        <outlet property="navBarItem" destination="aqv-Lg-rVb" id="HpN-UO-v7n"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Ms-xp-gr3" sceneMemberID="firstResponder"/>

@@ -133,7 +133,8 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
             try self.transmitter.send(dictionary, toUser: nil, options: options)
         }
         catch let err as NSError {
-            print("Error: \(err)")
+            print("Send Message Error: \(err)")
+            failedMessages.append(message)
         }
         print("sent Message")
     }
@@ -144,6 +145,7 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
 public protocol MessageRecievedDelegate{
     func onMessageReceived(message:ChatMessage)
 }
+
 public protocol ConnectionDelegate{
     func deviceConnected()
     func deviceLost()

@@ -51,7 +51,7 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
         
         client.sendMessage(message)
         
-        
+         
         self.messageField.text = ""
         self.messages.add(message)
         
@@ -119,9 +119,22 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
         
         self.messageField.delegate = self
         
+        navBarItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(addTapped))
+
+        
     }
 
-    
+    @objc func addTapped(){
+        print("Add Tapped")
+        //dismiss(animated: true, completion: nil)
+        let transition: CATransition = CATransition()
+        transition.duration = 0.5
+        transition.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+        transition.type = kCATransitionReveal
+        transition.subtype = kCATransitionFromRight
+        self.view.window!.layer.add(transition, forKey: nil)
+        self.dismiss(animated: false, completion: nil)
+    }
     @objc func dismissKeyboard() {
         
         view.endEditing(true)
