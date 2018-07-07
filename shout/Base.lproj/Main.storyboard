@@ -197,7 +197,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Ulr-wv-7ak"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Shout" id="aqv-Lg-rVb"/>
+                    <navigationItem key="navigationItem" title="# people shouting" id="aqv-Lg-rVb"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="heightConstraint" destination="piB-mz-bz1" id="HcP-Bn-fOh"/>
