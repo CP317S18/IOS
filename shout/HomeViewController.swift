@@ -49,15 +49,22 @@ class HomeViewController: UIViewController, ConnectionDelegate, UITextFieldDeleg
     override open func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        print("View Did Load")
         
+        // Get Client instance and add Connection listener
         client = BluetoothClient.getInstance()
         client.register(connectionDelegate: self)
+        
         // Set shout to connected count
         self.shoutCount.text = "\(client.getConnectedCount())"
         
         //give usernameField a delegate so you can close keyboard on return
         self.usernameField.delegate = self
+        
+        //Fetch Saved Username and Set
+        let savedUsername = userDefaults.object(forKey: "username") as? String
+        if (savedUsername != nil){
+            usernameField.text = savedUsername
+        }
     }
     
     // Close Keyboard on username return

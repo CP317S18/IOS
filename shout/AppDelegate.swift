@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
     
     required override init() {
         print("App Delegate Init Called")
-        client = BluetoothClient()
+        self.client = BluetoothClient.getInstance()
         super.init()
     }
     
