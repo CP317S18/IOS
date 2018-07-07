@@ -18,6 +18,7 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
     fileprivate var connectedDevices: Int
     fileprivate var isStarted: Bool
     fileprivate var failedMessages: Array<ChatMessage>
+    fileprivate var connectedDeviceList: NSMutableArray
     
     fileprivate var usernameKey = "username"
     fileprivate var contentKey = "content"
@@ -41,15 +42,14 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
         self.connectedDevices = 0
         self.isStarted = false
         self.failedMessages = Array()
+        self.connectedDeviceList = NSMutableArray()
         super.init()
         self.transmitter.delegate = self
         self.transmitter.isBackgroundModeEnabled = true
-        self.start()
     }
     
     public func start(){
         print("Transmitter Starting from init")
-        self.transmitter.delegate = self
         self.transmitter.start();
     }
     
@@ -70,6 +70,12 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
     
     public func transmitter(_ transmitter: BFTransmitter, didDetectConnectionWithUser user: String) {
         self.connectedDevices += 1
+        print("Gained \(user)")
+        if !self.connectedDeviceList.contains(user) {
+            self.connectedDeviceList.add(user)
+        }else{
+            print("Already in Dict")
+        }
         connectionDelegates.forEach { delegate in
             delegate.deviceConnected()
             delegate.numberOfDevicesConnectedChanged(count: self.connectedDevices)
@@ -78,6 +84,12 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
     
     public func transmitter(_ transmitter: BFTransmitter, didDetectDisconnectionWithUser user: String) {
         self.connectedDevices -= 1
+        print("Lost \(user)")
+        if self.connectedDeviceList.contains(user){
+           self.connectedDeviceList.remove(user)
+        }else{
+            print("Was not in Dict upon disconnection")
+        }
         connectionDelegates.forEach { delegate in
             delegate.deviceLost()
             delegate.numberOfDevicesConnectedChanged(count: self.connectedDevices)
@@ -86,6 +98,10 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
     
     public func transmitter(_ transmitter: BFTransmitter, didFailAtStartWithError error: Error) {
         
+    }
+    
+    public func transmitter(_ transmitter: BFTransmitter, shouldConnectSecurelyWithUser user: String) -> Bool {
+        return false //if true establish connection with encryption capacities.
     }
     
     public func register(messageDelegate:MessageRecievedDelegate){
@@ -120,21 +136,23 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
         var dictionary: Dictionary<String, Any>
         var options: BFSendingOption
         
-        options = [.fullTransmission, .broadcastReceiver]
+        options = [.meshTransmission, .directTransmission]
         
         dictionary = [
             usernameKey: message.username,
             contentKey: message.content,
             typeKey: message.type
         ]
+        print("sending direct message")
+        connectedDeviceList.forEach{user in
+            do {
+                try self.transmitter.send(dictionary, toUser: user as? String, options: options)
+            }
+            catch let err as NSError {
+                print("Send Message to \(user) Error: \(err)")
+            }
+        }
         
-        do {
-            try self.transmitter.send(dictionary, toUser: nil, options: options)
-        }
-        catch let err as NSError {
-            print("Send Message Error: \(err)")
-        }
-        print("sent Message")
     }
     
     
