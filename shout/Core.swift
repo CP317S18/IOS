@@ -121,6 +121,7 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
     }*/
     
     public func register(connectionDelegate:ConnectionDelegate){
+        print("Added Connection Delegate")
         connectionDelegates.append(connectionDelegate)
     }
     
