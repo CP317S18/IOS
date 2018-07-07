@@ -9,7 +9,8 @@
 import UIKit
 import Foundation
 
-class ChatViewController: UIViewController, MessageRecievedDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+    
     /*
      
      View Layout Sections:
@@ -53,6 +54,7 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
         
         //Initial Bluetooth Client Setup
         client.register(messageDelegate: self)
+        client.register(connectionDelegate: self)
         
         //Fetches username from userdefaults
         self.username = userDefaults.object(forKey: "username") as? String
@@ -77,14 +79,16 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
         
         //Listener for Back Button Tapped
         navBarItem.leftBarButtonItem = UIBarButtonItem(title: "Leave", style: .plain, target: self, action: #selector(leaveChat))
-        var title = "# people shouting"
-        if(client.getConnectedCount() == 0){
-            title = "you are alone"
+        
+
+        var title: String = "# People Shouting"
+        if(self.client.getConnectedCount() == 0){
+            title = "You are Alone"
         }else{
-            title = "\(client.getConnectedCount())" + " people shouting"
-            
+            title = "\(client.getConnectedCount())" + " People Shouting"
         }
         navBarItem.title = title
+        
         
         self.alertChat(type: messageType.connection)
         
@@ -105,7 +109,15 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
         self.dismiss(animated: false, completion: nil)
     }
     
-    
+    func numberOfDevicesConnectedChanged(count: Int) {
+        var title: String
+        if(count == 0){
+            title = "You are Alone"
+        }else{
+            title = "\(count)" + " People Shouting"
+        }
+        navBarItem.title = title
+    }
     /*
  
      Messaging Functions
@@ -363,6 +375,9 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
         
         
     }
+    
+    func deviceConnected(){}
+    func deviceLost(){}
 }
 
 extension UIColor {
