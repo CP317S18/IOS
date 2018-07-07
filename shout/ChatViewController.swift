@@ -27,6 +27,8 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
     //User Defaults to persist Username
     let userDefaults = UserDefaults.standard
     var username: String?
+    var barHeight: CGFloat = 0.0
+    var kbHeight: CGFloat = 0.0
     
     //Store Last Connected and disconnected to avoid spamming
     var lastConnected: String = ""
@@ -37,12 +39,14 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
     @IBOutlet var heightConstraint: NSLayoutConstraint!
     @IBOutlet weak var messageField: UITextField!
     @IBOutlet weak var messageTableView: UITableView!
+    @IBOutlet weak var composeView: UIView!
     
     @IBOutlet weak var navBarItem: UINavigationItem!
     
     //Array Containing the Messages
     var messages: NSMutableArray = []
     var colourMap: [String:String] = [:]
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,6 +87,9 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
         navBarItem.title = title
         
         self.alertChat(type: messageType.connection)
+        
+        barHeight = UIApplication.shared.statusBarFrame.height +
+            self.navigationController!.navigationBar.frame.height
     }
 
     
@@ -107,8 +114,6 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
     
     //This Function handles when a Message is Recieved
     func onMessageReceived(message: ChatMessage) {
-        print("Delegate Message recieived")
-        
         
         switch message.type{
             
@@ -245,6 +250,8 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
             self.view.layoutIfNeeded()
         })
         
+       
+        self.kbHeight = frame.size.height - padding
         self.adjustTableSize()
         self.moveToBottom()
     }
@@ -255,6 +262,7 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
         UIView.animate(withDuration: 0.5, animations: { () -> Void in
             self.view.layoutIfNeeded()
         })
+        self.kbHeight = 0.0
         
         self.adjustTableSize()
     }
@@ -324,9 +332,25 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
     }
     
     func adjustTableSize(){
-        var frame: CGRect = self.messageTableView.frame
-        frame.size.height = self.messageTableView.contentSize.height
-        self.messageTableView.frame = frame
+
+        //print("message content: \(self.messageTableView.contentSize.height)")
+        //print("message frame: \(self.messageTableView.frame.height)")
+        //print(UIScreen.main.bounds.height - (kbHeight+self.composeView.height) - barHeight)
+        /*
+        print(self.kbHeight)
+        if(self.messageTableView.contentSize.height > self.messageTableView.frame.height){
+            var frame: CGRect = self.messageTableView.frame
+            frame.size.height = messageTableView.contentSize.height
+            self.messageTableView.frame = frame
+        }
+         if(self.messageTableView.contentSize.height < self.messageTableView.frame.height){
+         var frame: CGRect = self.messageTableView.frame
+         frame.size.height = messageTableView.contentSize.height
+         self.messageTableView.frame = frame
+         }
+         */
+        
+       
     }
     
     func addRowToTable(){
