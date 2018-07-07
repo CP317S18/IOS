@@ -72,8 +72,15 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
         view.addGestureRecognizer(tap)
         
         //Listener for Back Button Tapped
-        navBarItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(leaveChat))
-        
+        navBarItem.leftBarButtonItem = UIBarButtonItem(title: "Leave", style: .plain, target: self, action: #selector(leaveChat))
+        var title = "# people shouting"
+        if(client.getConnectedCount() == 0){
+            title = "you are alone"
+        }else{
+            title = "\(client.getConnectedCount())" + " people shouting"
+            
+        }
+        navBarItem.title = title
         
         self.alertChat(type: messageType.connection)
     }
@@ -86,7 +93,7 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
         transition.duration = 0.5
         transition.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
         transition.type = kCATransitionReveal
-        transition.subtype = kCATransitionFromRight
+        transition.subtype = kCATransitionFromLeft
         self.view.window!.layer.add(transition, forKey: nil)
         self.dismiss(animated: false, completion: nil)
     }
@@ -291,12 +298,12 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, UITableView
             messageLabel.textAlignment = NSTextAlignment.left
         case messageType.connection.rawValue:
             userLabel.text = ""
-            messageLabel.text = "\(message.username) Has Joined Chat"
+            messageLabel.text = "\(message.username) has joined chat"
             messageLabel.textColor = UIColor.lightGray
             messageLabel.textAlignment = NSTextAlignment.center
         case messageType.disconnection.rawValue:
             userLabel.text = ""
-            messageLabel.text = "\(message.username) Has Left Chat"
+            messageLabel.text = "\(message.username) has left chat"
             messageLabel.textColor = UIColor.lightGray
             messageLabel.textAlignment = NSTextAlignment.center
         default:
