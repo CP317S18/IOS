@@ -8,6 +8,7 @@
 
 import UIKit
 import Foundation
+import UserNotifications
 
 class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
@@ -32,8 +33,8 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
     var kbHeight: CGFloat = 0.0
     
     //Store Last Connected and disconnected to avoid spamming
-    var lastConnected: String = ""
-    var lastDisconnected: String = ""
+    //var lastConnected: String = ""
+    //var lastDisconnected: String = ""
     
     // Outlets attached to StoryBoard
     @IBOutlet weak var keyboardConstraint: NSLayoutConstraint!
@@ -73,6 +74,15 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
         NotificationCenter.default.addObserver(self, selector: #selector(ChatViewController.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ChatViewController.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
+        //Observer for when the controller is opened once its already closed
+        NotificationCenter.default.addObserver(self, selector: #selector(ChatViewController.openactivity), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
+        
+        UNUserNotificationCenter.current().requestAuthorization(options:
+            [[.alert, .sound, .badge]],
+                                    completionHandler: { (granted, error) in
+                                    // Handle Error
+        })
+        
         //Recognizes tap on messages and closes keyboard
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)
@@ -96,9 +106,17 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
             self.navigationController!.navigationBar.frame.height
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
+    }
+    
+    @objc func openactivity()  {
+        //Clear Notifications
+        UIApplication.shared.applicationIconBadgeNumber = 0
+    }
     
     @objc func leaveChat(){
-        //dismiss(animated: true, completion: nil)
         self.alertChat(type: messageType.disconnection)
         let transition: CATransition = CATransition()
         transition.duration = 0.5
@@ -126,36 +144,38 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
     
     //This Function handles when a Message is Recieved
     func onMessageReceived(message: ChatMessage) {
+        let state: UIApplicationState = UIApplication.shared.applicationState
+        
+        print("Message Received")
         
         switch message.type{
             
         //Is Normal Message
         case messageType.message.rawValue:
+            
+            if state == .background{
+                print("app in background, sending notification")
+                messageNotification(message: message)
+            }
+            
             self.messages.add(message)
             self.addRowToTable()
             
         //Is Connected Message
         case messageType.connection.rawValue:
             
-            //Check if last user connected
-            if (self.lastConnected != message.username){
-                self.lastConnected = message.username
-                self.messages.add(message)
-                self.addRowToTable()
-            }
+            self.messages.add(message)
+            self.addRowToTable()
         
         //Is Disconnected Message
         case messageType.disconnection.rawValue:
-            
-            //Check if last user disconnected
-            if (self.lastDisconnected != message.username){
-                self.lastDisconnected = message.username
-                self.messages.add(message)
-                self.addRowToTable()
-            }
+
+            self.messages.add(message)
+            self.addRowToTable()
             
         //Default case, shouldnt ever happen?
         default:
+            
             self.messages.add(message)
             self.addRowToTable()
             
@@ -176,6 +196,7 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
         print("Send Message from View Controller Called")
         let message: ChatMessage = ChatMessage()
         message.username = self.username!
+        message.uuid = client.getUUID()
         message.content = self.messageField.text!
         message.type = messageType.message.rawValue
         
@@ -196,6 +217,7 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
         message.username = self.username!
         message.content = ""
         message.type = type.rawValue
+        message.uuid = client.getUUID()
         
         client.sendMessage(message)
         
@@ -205,12 +227,12 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
     }
 
     
-    func getMessageColour(username: String) -> UIColor{
+    func getMessageColour(uuid: String) -> UIColor{
         // Check if the username is stored in colour Map
         
-        if self.colourMap.keys.contains(username){
+        if self.colourMap.keys.contains(uuid){
             
-            return UIColor(hex: colourMap[username]!)
+            return UIColor(hex: colourMap[uuid]!)
             
         }else{
             
@@ -224,7 +246,7 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
                 colourIndex = arc4random_uniform(UInt32(webSafeColours.count))
                 colour = webSafeColours[Int(colourIndex)]
             }
-            colourMap[username] = colour
+            colourMap[uuid] = colour
             return UIColor(hex: colour)
             
             
@@ -239,6 +261,28 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
             }
         }
         return false
+    }
+    
+    //Sends Notification to iOS if app is in background mode
+    func messageNotification(message: ChatMessage) {
+        let content = UNMutableNotificationContent()
+        
+        content.title = "Shout From \(message.username)"
+        content.body = message.content
+        content.badge = 1
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5,
+                                                        repeats: false)
+        
+        let requestIdentifier = "shoutNotification"
+        let request = UNNotificationRequest(identifier: requestIdentifier,
+                                            content: content, trigger: trigger)
+        
+        //Add Notification to iphone
+        UNUserNotificationCenter.current().add(request,
+                                               withCompletionHandler: { (error) in
+                                                // Handle error
+        })
     }
     
     
@@ -310,7 +354,7 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
         switch message.type{
         case messageType.message.rawValue:
             userLabel.text = message.username
-            userLabel.textColor = getMessageColour(username: message.username)
+            userLabel.textColor = getMessageColour(uuid: message.uuid)
             messageLabel.text = message.content
             messageLabel.textColor = UIColor.black
             messageLabel.lineBreakMode = NSLineBreakMode.byWordWrapping

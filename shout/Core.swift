@@ -16,16 +16,20 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
     fileprivate var messsageReceiveDelegates: Array<MessageRecievedDelegate>
     fileprivate var connectionDelegates: Array<ConnectionDelegate>
     fileprivate var connectedDevices: Int
-    fileprivate var isStarted: Bool
     fileprivate var failedMessages: Array<ChatMessage>
     fileprivate var connectedDeviceList: NSMutableArray
     
     fileprivate var usernameKey = "username"
     fileprivate var contentKey = "content"
     fileprivate var typeKey = "type"
+    fileprivate var uuid = ""
     
     public func getConnectedCount() -> Int{
         return self.connectedDevices
+    }
+    
+    public func getUUID() -> String{
+        return self.uuid
     }
     
     fileprivate static let instance = BluetoothClient()
@@ -40,12 +44,15 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
         self.messsageReceiveDelegates = Array()
         self.connectionDelegates = Array()
         self.connectedDevices = 0
-        self.isStarted = false
         self.failedMessages = Array()
         self.connectedDeviceList = NSMutableArray()
         super.init()
         self.transmitter.delegate = self
         self.transmitter.isBackgroundModeEnabled = true
+        self.uuid = self.transmitter.currentUser!
+        
+        BFTransmitter.setLogLevel(BFLogLevel.trace)
+        
     }
     
     public func start(){
@@ -62,9 +69,11 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
     }
     
     public func transmitter(_ transmitter: BFTransmitter, didReceive dictionary: [String : Any]?, with data: Data?, fromUser user: String, packetID: String, broadcast: Bool, mesh: Bool) {
-        let message : ChatMessage = ChatMessage(dictionary: dictionary!, date:Date())
-        messsageReceiveDelegates.forEach { delegate in
-            delegate.onMessageReceived(message: message)
+        if(mesh){
+            let message : ChatMessage = ChatMessage(dictionary: dictionary!, date:Date(), uuid: user)
+            messsageReceiveDelegates.forEach { delegate in
+                delegate.onMessageReceived(message: message)
+            }
         }
     }
     
@@ -137,7 +146,7 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
         var dictionary: Dictionary<String, Any>
         var options: BFSendingOption
         
-        options = [.meshTransmission, .directTransmission]
+        options = [.meshTransmission]
         
         dictionary = [
             usernameKey: message.username,
