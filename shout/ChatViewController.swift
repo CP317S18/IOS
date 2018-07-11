@@ -185,7 +185,7 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
 
     //When the "Send" button on they keyboard is pressed
     @IBAction func messagePrimaryActionTriggered(_ sender: Any) {
-        if self.messageField.text!.isEmpty {
+        if self.messageField.text!.trimmingCharacters(in: .whitespaces).isEmpty {
             return
         }
         self.sendMessage()

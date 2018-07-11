@@ -17,7 +17,7 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
     fileprivate var connectionDelegates: Array<ConnectionDelegate>
     fileprivate var connectedDevices: Int
     fileprivate var failedMessages: Array<ChatMessage>
-    fileprivate var connectedDeviceList: NSMutableArray
+    fileprivate var connectedDeviceList: Array<String>
     
     fileprivate var usernameKey = "username"
     fileprivate var contentKey = "content"
@@ -45,7 +45,7 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
         self.connectionDelegates = Array()
         self.connectedDevices = 0
         self.failedMessages = Array()
-        self.connectedDeviceList = NSMutableArray()
+        self.connectedDeviceList = Array()
         super.init()
         self.transmitter.delegate = self
         self.transmitter.isBackgroundModeEnabled = true
@@ -71,8 +71,8 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
     public func transmitter(_ transmitter: BFTransmitter, didReceive dictionary: [String : Any]?, with data: Data?, fromUser user: String, packetID: String, broadcast: Bool, mesh: Bool) {
         if(mesh){
             let message : ChatMessage = ChatMessage(dictionary: dictionary!, date:Date(), uuid: user)
-            messsageReceiveDelegates.forEach { delegate in
-                delegate.onMessageReceived(message: message)
+            for i in messsageReceiveDelegates.indices{
+                messsageReceiveDelegates[i].onMessageReceived(message: message)
             }
         }
     }
@@ -81,13 +81,13 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
         self.connectedDevices += 1
         print("Gained \(user)")
         if !self.connectedDeviceList.contains(user) {
-            self.connectedDeviceList.add(user)
+            self.connectedDeviceList.append(user)
         }else{
             print("Already in Dict")
         }
-        connectionDelegates.forEach { delegate in
-            delegate.deviceConnected()
-            delegate.numberOfDevicesConnectedChanged(count: self.connectedDevices)
+        for i in connectionDelegates.indices{
+            connectionDelegates[i].deviceConnected()
+            connectionDelegates[i].numberOfDevicesConnectedChanged(count: self.connectedDevices)
         }
     }
     
@@ -95,13 +95,15 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
         self.connectedDevices -= 1
         print("Lost \(user)")
         if self.connectedDeviceList.contains(user){
-           self.connectedDeviceList.remove(user)
+            if let index = self.connectedDeviceList.index(of: user) {
+                self.connectedDeviceList.remove(at: index)
+            }
         }else{
             print("Was not in Dict upon disconnection")
         }
-        connectionDelegates.forEach { delegate in
-            delegate.deviceLost()
-            delegate.numberOfDevicesConnectedChanged(count: self.connectedDevices)
+        for i in connectionDelegates.indices{
+            connectionDelegates[i].deviceConnected()
+            connectionDelegates[i].numberOfDevicesConnectedChanged(count: self.connectedDevices)
         }
     }
     
@@ -154,12 +156,12 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
             typeKey: message.type
         ]
         print("sending direct message")
-        connectedDeviceList.forEach{user in
+        for i in connectedDeviceList.indices{
             do {
-                try self.transmitter.send(dictionary, toUser: user as? String, options: options)
+                try self.transmitter.send(dictionary, toUser: connectedDeviceList[i], options: options)
             }
             catch let err as NSError {
-                print("Send Message to \(user) Error: \(err)")
+                print("Send Message to \(connectedDeviceList[i]) Error: \(err)")
             }
         }
         
