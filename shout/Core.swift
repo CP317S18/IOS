@@ -71,7 +71,7 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
     public func transmitter(_ transmitter: BFTransmitter, didReceive dictionary: [String : Any]?, with data: Data?, fromUser user: String, packetID: String, broadcast: Bool, mesh: Bool) {
         if(mesh){
             let message : ChatMessage = ChatMessage(dictionary: dictionary!, date:Date(), uuid: user)
-            for i in 0 ... messsageReceiveDelegates.count - 1{
+            for i in messsageReceiveDelegates.indices{
                 messsageReceiveDelegates[i].onMessageReceived(message: message)
             }
         }
@@ -85,7 +85,7 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
         }else{
             print("Already in Dict")
         }
-        for i in 0 ... connectionDelegates.count - 1{
+        for i in connectionDelegates.indices{
             connectionDelegates[i].deviceConnected()
             connectionDelegates[i].numberOfDevicesConnectedChanged(count: self.connectedDevices)
         }
@@ -101,7 +101,7 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
         }else{
             print("Was not in Dict upon disconnection")
         }
-        for i in 0 ... connectionDelegates.count - 1{
+        for i in connectionDelegates.indices{
             connectionDelegates[i].deviceConnected()
             connectionDelegates[i].numberOfDevicesConnectedChanged(count: self.connectedDevices)
         }
@@ -156,7 +156,7 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
             typeKey: message.type
         ]
         print("sending direct message")
-        for i in 0 ... connectedDeviceList.count - 1{
+        for i in connectedDeviceList.indices{
             do {
                 try self.transmitter.send(dictionary, toUser: connectedDeviceList[i], options: options)
             }
