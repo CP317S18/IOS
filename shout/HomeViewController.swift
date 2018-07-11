@@ -65,6 +65,11 @@ class HomeViewController: UIViewController, ConnectionDelegate, UITextFieldDeleg
         if (savedUsername != nil){
             usernameField.text = savedUsername
         }
+        let jeremyGif = UIImage.gifImageWithName("plexus")
+        let imageView = UIImageView(image: jeremyGif)
+        imageView.frame = CGRect(x: 35, y: 30, width: 300, height: 300)
+        view.addSubview(imageView)
+        view.sendSubview(toBack: imageView)
     }
     
     // Close Keyboard on username return
