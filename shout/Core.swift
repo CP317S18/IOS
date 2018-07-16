@@ -115,35 +115,49 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
         return false //if true establish connection with encryption capacities.
     }
     
-    public func register(messageDelegate:MessageRecievedDelegate){
-        print("Added Message Delegate")
-        messsageReceiveDelegates.append(messageDelegate)
-    }
-    
     public func transmitter(_ transmitter: BFTransmitter, didOccur event: BFEvent, description: String)
     {
         print("Event reported: \(description)");
     }
     
-    /*public func unRegister(messageDelegate:MessageRecievedDelegate){
-        if let index = messsageReceiveDelegates.index(object:messageDelegate) {
+    /*
+     Registers a Message Delegate that listens for new Messages received
+     */
+    public func register(messageDelegate:MessageRecievedDelegate){
+        print("Added Message Delegate")
+        messsageReceiveDelegates.append(messageDelegate)
+    }
+
+    
+    /*
+     Removes the Message Delegate from the listener array
+     */
+    public func unRegister(messageDelegate: MessageRecievedDelegate){
+        if let index = messsageReceiveDelegates.index(where: { $0 === messageDelegate }) {
             messsageReceiveDelegates.remove(at: index)
         }
-    }*/
+    }
     
+    /*
+     Registers a Connection Delegate that listens for new connections
+     */
     public func register(connectionDelegate:ConnectionDelegate){
         print("Added Connection Delegate")
         connectionDelegates.append(connectionDelegate)
     }
     
-    
-    
-   /* public func unRegister(connectionDelegate:ConnectionDelegate){
-        if let index = connectionDelegates.index(where:{$0 == connectionDelegate}) {
+    /*
+     Removes the Connection Delegate from the listener array
+     */
+   public func unRegister(connectionDelegate: ConnectionDelegate){
+         if let index = connectionDelegates.index(where: { $0 === connectionDelegate }) {
             connectionDelegates.remove(at: index)
-        }
-    }*/
+         }
+    }
     
+    /*
+     Sends the message that a view controller provides
+     */
     open func sendMessage(_ message: ChatMessage){
         var dictionary: Dictionary<String, Any>
         var options: BFSendingOption
@@ -155,6 +169,7 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
             contentKey: message.content,
             typeKey: message.type
         ]
+        
         print("sending direct message")
         for i in connectedDeviceList.indices{
             do {
@@ -164,16 +179,13 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
                 print("Send Message to \(connectedDeviceList[i]) Error: \(err)")
             }
         }
-        
     }
-    
-    
 }
 
-public protocol MessageRecievedDelegate{
+public protocol MessageRecievedDelegate: class{
     func onMessageReceived(message:ChatMessage)
 }
-public protocol ConnectionDelegate{
+public protocol ConnectionDelegate: class {
     func deviceConnected()
     func deviceLost()
     func numberOfDevicesConnectedChanged(count: Int)

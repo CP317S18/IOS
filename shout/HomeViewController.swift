@@ -7,16 +7,27 @@
 //
 //hi
 import UIKit
+import CoreBluetooth
 
-class HomeViewController: UIViewController, ConnectionDelegate, UITextFieldDelegate {
+class HomeViewController: UIViewController, ConnectionDelegate, UITextFieldDelegate, CBCentralManagerDelegate {
+    
+    
+    //Core Bluetooth Manager
+    var BLManager:CBCentralManager!
     
     var client: BluetoothClient = BluetoothClient.getInstance()
+
     //User Defaults to persist Username
     let userDefaults = UserDefaults.standard
+    
+    let bluetoothAlert: UIAlertController = UIAlertController(title: "Please Enable Bluetooth", message: "In order to use this app properly, you must have bluetooth enabled.", preferredStyle: .alert)
+    var alertShowing: Bool = false
     
     //UI Variables
     @IBOutlet var usernameField: UITextField!
     @IBOutlet weak var shoutCount: UILabel!
+    
+    
     
     //UI Actions
     @IBAction func enterChat(_ sender: Any) {
@@ -54,16 +65,51 @@ class HomeViewController: UIViewController, ConnectionDelegate, UITextFieldDeleg
         client = BluetoothClient.getInstance()
         client.register(connectionDelegate: self)
         
+        BLManager           = CBCentralManager()
+        BLManager.delegate  = self
+        
         // Set shout to connected count
         self.shoutCount.text = "\(client.getConnectedCount())"
         
         //give usernameField a delegate so you can close keyboard on return
         self.usernameField.delegate = self
-        
         //Fetch Saved Username and Set
         let savedUsername = userDefaults.object(forKey: "username") as? String
         if (savedUsername != nil){
             usernameField.text = savedUsername
+        }
+        
+        self.bluetoothAlert.addAction(UIAlertAction(title: "Enable", style: .default, handler: {action in
+            //This could possibly get us rejected from the app store because of ios 11, only time will tell
+            //UIApplication.shared.open(URL(string:"App-Prefs:root=Bluetooth")!, options: [:], completionHandler: nil)
+            UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!, options: [:], completionHandler: nil)
+        }))
+        self.bluetoothAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+    }
+    
+    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        switch central.state {
+        case .poweredOn:
+            print("Bluetooth is On.")
+            if self.alertShowing{
+                self.dismiss(animated: true, completion: nil)
+            }
+            break
+        case .poweredOff:
+            print("Bluetooth is off.")
+            self.alertShowing = true
+            self.present(self.bluetoothAlert, animated: true)
+        break
+        case .resetting:
+            break
+        case .unauthorized:
+            break
+        case .unsupported:
+            break
+        case .unknown:
+            break
+        default:
+            break
         }
     }
     

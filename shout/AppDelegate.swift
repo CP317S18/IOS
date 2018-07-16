@@ -25,6 +25,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         // Override point for customization after application launch.
         print("App Delegate, about to launch init")
         client.start()
+        let userDefaultsDefaults = [
+            "NotiicationsActive": true,
+            "SoundActive" : true,
+            "VibrateActive": true,
+        ]
+        
+        UserDefaults.standard.register(defaults: userDefaultsDefaults)
         return true
     }
 
@@ -50,6 +57,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
         self.saveContext()
+    }
+    
+    func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
+        print("Opened application from notification")
     }
 
     // MARK: - Core Data stack

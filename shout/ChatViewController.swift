@@ -83,6 +83,8 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
                                     // Handle Error
         })
         
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        
         //Recognizes tap on messages and closes keyboard
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)
