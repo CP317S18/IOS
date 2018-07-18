@@ -6,4 +6,10 @@
 //  Copyright © 2018 wlu. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+class EnableBluetoothViewController: UIViewController{
+    override func viewDidAppear(_ animated: Bool) {
+        
+    }
+}
