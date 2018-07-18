@@ -111,6 +111,7 @@ class HomeViewController: UIViewController, ConnectionDelegate, UITextFieldDeleg
         default:
             break
         }
+
     }
     
     // Close Keyboard on username return
