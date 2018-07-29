@@ -42,7 +42,8 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
     @IBOutlet weak var messageField: UITextField!
     @IBOutlet weak var messageTableView: UITableView!
     @IBOutlet weak var composeView: UIView!
-    
+    @IBOutlet weak var numberLabel: UILabel!
+    @IBOutlet weak var numberView: UIView!
     @IBOutlet weak var navBarItem: UINavigationItem!
     
     //Array Containing the Messages
@@ -52,6 +53,21 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // UI Navigation Bar: Removes Border Line
+        navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        
+        // UI Shouter Bar: Add Drop Shadow
+        let shadowPathBar = UIBezierPath(rect: numberView.bounds)
+        numberView.clipsToBounds = false
+        numberView.layer.shadowColor = UIColor.black.cgColor
+        numberView.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        numberView.layer.shadowRadius = 2
+        numberView.layer.shadowOpacity = 0.4
+        numberView.layer.shadowPath = shadowPathBar.cgPath
+    
         
         //Initial Bluetooth Client Setup
         client.register(messageDelegate: self)
@@ -99,7 +115,7 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
         }else{
             title = "\(client.getConnectedCount())" + " People Shouting"
         }
-        navBarItem.title = title
+        numberLabel.text = title
         
         
         self.alertChat(type: messageType.connection)
@@ -126,6 +142,8 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
         transition.type = kCATransitionReveal
         transition.subtype = kCATransitionFromLeft
         self.view.window!.layer.add(transition, forKey: nil)
+        self.client.unRegister(messageDelegate: self)
+        self.client.unRegister(connectionDelegate: self)
         self.dismiss(animated: false, completion: nil)
     }
     
@@ -136,7 +154,7 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
         }else{
             title = "\(count)" + " People Shouting"
         }
-        navBarItem.title = title
+        numberLabel.text = title
     }
     /*
  
@@ -269,22 +287,25 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
     func messageNotification(message: ChatMessage) {
         let content = UNMutableNotificationContent()
         
-        content.title = "Shout From \(message.username)"
-        content.body = message.content
-        content.badge = 1
+        if userDefaults.bool(forKey: "NotificationsActive"){
+            content.title = "Shout From \(message.username)"
+            content.body = message.content
+            content.badge = 1
+            
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5,
+                                                            repeats: false)
+            
+            let requestIdentifier = "shoutNotification"
+            let request = UNNotificationRequest(identifier: requestIdentifier,
+                                                content: content, trigger: trigger)
+            
+            //Add Notification to iphone
+            UNUserNotificationCenter.current().add(request,
+                                                   withCompletionHandler: { (error) in
+                                                    // Handle error
+            })
+        }
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5,
-                                                        repeats: false)
-        
-        let requestIdentifier = "shoutNotification"
-        let request = UNNotificationRequest(identifier: requestIdentifier,
-                                            content: content, trigger: trigger)
-        
-        //Add Notification to iphone
-        UNUserNotificationCenter.current().add(request,
-                                               withCompletionHandler: { (error) in
-                                                // Handle error
-        })
     }
     
     
