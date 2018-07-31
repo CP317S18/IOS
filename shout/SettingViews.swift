@@ -13,7 +13,7 @@ class SettingsViewController: UITableViewController{
     @IBOutlet var settingsTableView: UITableView!
     override open func viewDidLoad() {
         super.viewDidLoad()
-        self.settingsTableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
+        self.settingsTableView.contentInset = UIEdgeInsets(top: UIApplication.shared.statusBarFrame.height, left: 0, bottom: 0, right: 0)
     }
 }
 
@@ -50,7 +50,7 @@ class NotificationSettingsView: UITableViewController{
     
     override open func viewDidLoad() {
         super.viewDidLoad()
-        self.notificationsTableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
+        self.notificationsTableView.contentInset = UIEdgeInsets(top: UIApplication.shared.statusBarFrame.height, left: 0, bottom: 0, right: 0)
         showNotifSwitch.setOn(userDefaults.bool(forKey: "NotificationsActive"), animated: false)
         soundSwitch.setOn(userDefaults.bool(forKey: "SoundActive"), animated: false)
         vibrateSwitch.setOn(userDefaults.bool(forKey: "VibrateActive"), animated: false)
@@ -63,6 +63,6 @@ class ReportBugsView: UITableViewController{
     @IBOutlet var reportBugsTable: UITableView!
     override open func viewDidLoad() {
         super.viewDidLoad()
-        self.reportBugsTable.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
+        self.reportBugsTable.contentInset = UIEdgeInsets(top: UIApplication.shared.statusBarFrame.height, left: 0, bottom: 0, right: 0)
     }
 }

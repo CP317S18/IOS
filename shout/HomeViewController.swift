@@ -19,7 +19,7 @@ class HomeViewController: UIViewController, ConnectionDelegate, UITextFieldDeleg
 
     //User Defaults to persist Username
     let userDefaults = UserDefaults.standard
-    
+    let maxLength: Int = 30
     let bluetoothAlert: UIAlertController = UIAlertController(title: "Please Enable Bluetooth", message: "In order to use this app properly, you must have bluetooth enabled.", preferredStyle: .alert)
     var alertShowing: Bool = false
     
@@ -129,6 +129,11 @@ class HomeViewController: UIViewController, ConnectionDelegate, UITextFieldDeleg
         return false
     }
     
+    @IBAction func maxLengthCheck(_ sender: Any) {
+        if ((usernameField.text?.count)! > self.maxLength) {
+            usernameField.deleteBackward()
+        }
+    }
     @objc func keyboardWillChange(notification: Notification){
         guard let keyboardRect = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
             return
