@@ -19,15 +19,13 @@ class HomeViewController: UIViewController, ConnectionDelegate, UITextFieldDeleg
 
     //User Defaults to persist Username
     let userDefaults = UserDefaults.standard
-    
+    let maxLength: Int = 30
     let bluetoothAlert: UIAlertController = UIAlertController(title: "Please Enable Bluetooth", message: "In order to use this app properly, you must have bluetooth enabled.", preferredStyle: .alert)
     var alertShowing: Bool = false
     
     //UI Variables
     @IBOutlet var usernameField: UITextField!
     @IBOutlet weak var shoutCount: UILabel!
-    
-    
     
     //UI Actions
     @IBAction func enterChat(_ sender: Any) {
@@ -79,12 +77,23 @@ class HomeViewController: UIViewController, ConnectionDelegate, UITextFieldDeleg
             usernameField.text = savedUsername
         }
         
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+        
+        
         self.bluetoothAlert.addAction(UIAlertAction(title: "Enable", style: .default, handler: {action in
             //This could possibly get us rejected from the app store because of ios 11, only time will tell
             //UIApplication.shared.open(URL(string:"App-Prefs:root=Bluetooth")!, options: [:], completionHandler: nil)
             UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!, options: [:], completionHandler: nil)
         }))
         self.bluetoothAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
     }
     
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -116,8 +125,26 @@ class HomeViewController: UIViewController, ConnectionDelegate, UITextFieldDeleg
     
     // Close Keyboard on username return
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.view.endEditing(true)
+        usernameField.resignFirstResponder()
         return false
+    }
+    
+    @IBAction func maxLengthCheck(_ sender: Any) {
+        if ((usernameField.text?.count)! > self.maxLength) {
+            usernameField.deleteBackward()
+        }
+    }
+    @objc func keyboardWillChange(notification: Notification){
+        guard let keyboardRect = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+            return
+        }
+        if notification.name == Notification.Name.UIKeyboardWillShow || notification.name == Notification.Name.UIKeyboardWillChangeFrame{
+            
+            view.frame.origin.y = -keyboardRect.height
+        }else {
+            view.frame.origin.y = 0
+        }
+        
     }
     
     override func didReceiveMemoryWarning() {

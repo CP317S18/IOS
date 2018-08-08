@@ -134,6 +134,7 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
      */
     public func unRegister(messageDelegate: MessageRecievedDelegate){
         if let index = messsageReceiveDelegates.index(where: { $0 === messageDelegate }) {
+            print("Removing Message Delegate")
             messsageReceiveDelegates.remove(at: index)
         }
     }
@@ -151,6 +152,7 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
      */
    public func unRegister(connectionDelegate: ConnectionDelegate){
          if let index = connectionDelegates.index(where: { $0 === connectionDelegate }) {
+            print("Removing Connection Delegate")
             connectionDelegates.remove(at: index)
          }
     }

@@ -16,13 +16,13 @@
 		103CB3BC20EEA1EF005BAF2E /* BFTransmitter.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 103CB3BA20EEA1EF005BAF2E /* BFTransmitter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		103CB3BF20EEA206005BAF2E /* Core.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103CB3BE20EEA206005BAF2E /* Core.swift */; };
 		103CB3C120EEA86C005BAF2E /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103CB3C020EEA86C005BAF2E /* ChatMessage.swift */; };
-		103CB3C320EECEC9005BAF2E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103CB3C220EECEC9005BAF2E /* SettingsViewController.swift */; };
+		103CB3C320EECEC9005BAF2E /* SettingViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103CB3C220EECEC9005BAF2E /* SettingViews.swift */; };
 		103CB3C720EECF84005BAF2E /* EnableBluetoothViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103CB3C620EECF84005BAF2E /* EnableBluetoothViewController.swift */; };
 		103CB3CA20EEF09F005BAF2E /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103CB3C820EEF028005BAF2E /* HomeViewController.swift */; };
 		103CB3F120EF19EC005BAF2E /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103CB3F020EF19EC005BAF2E /* ChatViewController.swift */; };
 		103CB3F420EFEB8A005BAF2E /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 103CB3F320EFEB8A005BAF2E /* CoreBluetooth.framework */; };
+		10448B84210E1E4600D596B8 /* Segues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10448B83210E1E4600D596B8 /* Segues.swift */; };
 		3ACDD50B20F5CA2C00878690 /* GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDD50A20F5CA2C00878690 /* GIF.swift */; };
-		3ACDD50D20F5CAB700878690 /* plexus.gif in Resources */ = {isa = PBXBuildFile; fileRef = 3ACDD50C20F5CAB700878690 /* plexus.gif */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,6 +40,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		100FD041210E70160073DA5F /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		103CB3A220EEA1C8005BAF2E /* shout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = shout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		103CB3A520EEA1C8005BAF2E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		103CB3AA20EEA1C8005BAF2E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -50,13 +51,13 @@
 		103CB3BA20EEA1EF005BAF2E /* BFTransmitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BFTransmitter.framework; sourceTree = "<group>"; };
 		103CB3BE20EEA206005BAF2E /* Core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core.swift; sourceTree = "<group>"; };
 		103CB3C020EEA86C005BAF2E /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
-		103CB3C220EECEC9005BAF2E /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		103CB3C220EECEC9005BAF2E /* SettingViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViews.swift; sourceTree = "<group>"; };
 		103CB3C620EECF84005BAF2E /* EnableBluetoothViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableBluetoothViewController.swift; sourceTree = "<group>"; };
 		103CB3C820EEF028005BAF2E /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		103CB3F020EF19EC005BAF2E /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		103CB3F320EFEB8A005BAF2E /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		10448B83210E1E4600D596B8 /* Segues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Segues.swift; sourceTree = "<group>"; };
 		3ACDD50A20F5CA2C00878690 /* GIF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIF.swift; sourceTree = "<group>"; };
-		3ACDD50C20F5CAB700878690 /* plexus.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = plexus.gif; path = ../../../Desktop/plexus.gif; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,7 +94,6 @@
 		103CB3A420EEA1C8005BAF2E /* shout */ = {
 			isa = PBXGroup;
 			children = (
-				3ACDD50C20F5CAB700878690 /* plexus.gif */,
 				103CB3C820EEF028005BAF2E /* HomeViewController.swift */,
 				103CB3BE20EEA206005BAF2E /* Core.swift */,
 				103CB3A520EEA1C8005BAF2E /* AppDelegate.swift */,
@@ -105,8 +105,9 @@
 				103CB3C620EECF84005BAF2E /* EnableBluetoothViewController.swift */,
 				103CB3C020EEA86C005BAF2E /* ChatMessage.swift */,
 				103CB3F020EF19EC005BAF2E /* ChatViewController.swift */,
-				103CB3C220EECEC9005BAF2E /* SettingsViewController.swift */,
+				103CB3C220EECEC9005BAF2E /* SettingViews.swift */,
 				3ACDD50A20F5CA2C00878690 /* GIF.swift */,
+				10448B83210E1E4600D596B8 /* Segues.swift */,
 			);
 			path = shout;
 			sourceTree = "<group>";
@@ -114,6 +115,7 @@
 		103CB3F220EFEB89005BAF2E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				100FD041210E70160073DA5F /* AudioToolbox.framework */,
 				103CB3F320EFEB8A005BAF2E /* CoreBluetooth.framework */,
 			);
 			name = Frameworks;
@@ -181,7 +183,6 @@
 				103CB3B320EEA1C8005BAF2E /* LaunchScreen.storyboard in Resources */,
 				103CB3B020EEA1C8005BAF2E /* Assets.xcassets in Resources */,
 				103CB3AB20EEA1C8005BAF2E /* Main.storyboard in Resources */,
-				3ACDD50D20F5CAB700878690 /* plexus.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,8 +200,9 @@
 				103CB3CA20EEF09F005BAF2E /* HomeViewController.swift in Sources */,
 				103CB3A620EEA1C8005BAF2E /* AppDelegate.swift in Sources */,
 				3ACDD50B20F5CA2C00878690 /* GIF.swift in Sources */,
+				10448B84210E1E4600D596B8 /* Segues.swift in Sources */,
 				103CB3AE20EEA1C8005BAF2E /* shout.xcdatamodeld in Sources */,
-				103CB3C320EECEC9005BAF2E /* SettingsViewController.swift in Sources */,
+				103CB3C320EECEC9005BAF2E /* SettingViews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

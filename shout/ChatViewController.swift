@@ -32,6 +32,9 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
     var barHeight: CGFloat = 0.0
     var kbHeight: CGFloat = 0.0
     
+    let messagePadding: CGFloat = 10.0
+    let subUsernamePadding: CGFloat = 20.0
+    
     //Store Last Connected and disconnected to avoid spamming
     //var lastConnected: String = ""
     //var lastDisconnected: String = ""
@@ -42,16 +45,33 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
     @IBOutlet weak var messageField: UITextField!
     @IBOutlet weak var messageTableView: UITableView!
     @IBOutlet weak var composeView: UIView!
-    
+    @IBOutlet weak var numberLabel: UILabel!
+    @IBOutlet weak var numberView: UIView!
     @IBOutlet weak var navBarItem: UINavigationItem!
     
     //Array Containing the Messages
     var messages: NSMutableArray = []
     var colourMap: [String:String] = [:]
+    var rectMap: [String: UIBezierPath] = [:]
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // UI Navigation Bar: Removes Border Line
+        navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        
+        // UI Shouter Bar: Add Drop Shadow
+        let shadowPathBar = UIBezierPath(rect: numberView.bounds)
+        numberView.clipsToBounds = false
+        numberView.layer.shadowColor = UIColor.black.cgColor
+        numberView.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        numberView.layer.shadowRadius = 2
+        numberView.layer.shadowOpacity = 0.4
+        numberView.layer.shadowPath = shadowPathBar.cgPath
+    
         
         //Initial Bluetooth Client Setup
         client.register(messageDelegate: self)
@@ -66,7 +86,6 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
         //TableView Init
         messageTableView.delegate = self
         messageTableView.dataSource = self
-        messageTableView.estimatedRowHeight = 25
         messageTableView.tableFooterView = UIView()
         messageTableView.reloadData()
         
@@ -99,7 +118,7 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
         }else{
             title = "\(client.getConnectedCount())" + " People Shouting"
         }
-        navBarItem.title = title
+        numberLabel.text = title
         
         
         self.alertChat(type: messageType.connection)
@@ -126,6 +145,8 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
         transition.type = kCATransitionReveal
         transition.subtype = kCATransitionFromLeft
         self.view.window!.layer.add(transition, forKey: nil)
+        self.client.unRegister(messageDelegate: self)
+        self.client.unRegister(connectionDelegate: self)
         self.dismiss(animated: false, completion: nil)
     }
     
@@ -136,7 +157,7 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
         }else{
             title = "\(count)" + " People Shouting"
         }
-        navBarItem.title = title
+        numberLabel.text = title
     }
     /*
  
@@ -269,22 +290,25 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
     func messageNotification(message: ChatMessage) {
         let content = UNMutableNotificationContent()
         
-        content.title = "Shout From \(message.username)"
-        content.body = message.content
-        content.badge = 1
+        if userDefaults.bool(forKey: "NotificationsActive"){
+            content.title = "Shout From \(message.username)"
+            content.body = message.content
+            content.badge = 1
+            
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5,
+                                                            repeats: false)
+            
+            let requestIdentifier = "shoutNotification"
+            let request = UNNotificationRequest(identifier: requestIdentifier,
+                                                content: content, trigger: trigger)
+            
+            //Add Notification to iphone
+            UNUserNotificationCenter.current().add(request,
+                                                   withCompletionHandler: { (error) in
+                                                    // Handle error
+            })
+        }
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5,
-                                                        repeats: false)
-        
-        let requestIdentifier = "shoutNotification"
-        let request = UNNotificationRequest(identifier: requestIdentifier,
-                                            content: content, trigger: trigger)
-        
-        //Add Notification to iphone
-        UNUserNotificationCenter.current().add(request,
-                                               withCompletionHandler: { (error) in
-                                                // Handle error
-        })
     }
     
     
@@ -310,7 +334,6 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
         
        
         self.kbHeight = frame.size.height - padding
-        self.adjustTableSize()
         self.moveToBottom()
     }
     
@@ -321,8 +344,6 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
             self.view.layoutIfNeeded()
         })
         self.kbHeight = 0.0
-        
-        self.adjustTableSize()
     }
     
     @objc func dismissKeyboard() {
@@ -346,37 +367,50 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
     
     //handles the rendering of the data in the cell
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MessageCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MessageCell", for: indexPath) as! MessageTableCell
         
-        let userLabel = cell.contentView.viewWithTag(1000) as! UILabel
-        let messageLabel = cell.contentView.viewWithTag(1001) as! UILabel
         let message: ChatMessage = self.messages.object(at: indexPath.item) as! ChatMessage
         
+        cell.loadCell(message)
+        
+        cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
         
         switch message.type{
         case messageType.message.rawValue:
-            userLabel.text = message.username
-            userLabel.textColor = getMessageColour(uuid: message.uuid)
-            messageLabel.text = message.content
-            messageLabel.textColor = UIColor.black
-            messageLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
-            messageLabel.numberOfLines = 0
-            messageLabel.textAlignment = NSTextAlignment.left
+            cell.username.text = message.username
+            cell.username.textColor = getMessageColour(uuid: message.uuid)
+            cell.message.text = message.content
+            cell.message.textColor = UIColor.black
+            let path = getExclusionPath(uuid: message.uuid, cell: cell)
+            cell.message.textContainer.exclusionPaths = [path]
+            cell.message.textAlignment = .left
+            
         case messageType.connection.rawValue:
-            userLabel.text = ""
-            messageLabel.text = "\(message.username) has joined chat"
-            messageLabel.textColor = UIColor.lightGray
-            messageLabel.textAlignment = NSTextAlignment.center
+            cell.username.text = ""
+            cell.message.text = "\(message.username) has joined chat"
+            cell.message.textColor = UIColor.lightGray
+            cell.message.textAlignment = .center
+            
         case messageType.disconnection.rawValue:
-            userLabel.text = ""
-            messageLabel.text = "\(message.username) has left chat"
-            messageLabel.textColor = UIColor.lightGray
-            messageLabel.textAlignment = NSTextAlignment.center
+            cell.username.text = ""
+            cell.message.text = "\(message.username) has left chat"
+            cell.message.textColor = UIColor.lightGray
+            cell.message.textAlignment = .center
+            
         default:
-            userLabel.text = message.username
-            messageLabel.text = message.content
+            cell.username.text = message.username
+            cell.message.text = message.content
         }
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        return UITableViewAutomaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
     }
     
     func moveToBottom() {
@@ -389,27 +423,17 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
         }
     }
     
-    func adjustTableSize(){
-
-        //print("message content: \(self.messageTableView.contentSize.height)")
-        //print("message frame: \(self.messageTableView.frame.height)")
-        //print(UIScreen.main.bounds.height - (kbHeight+self.composeView.height) - barHeight)
-        /*
-        print(self.kbHeight)
-        if(self.messageTableView.contentSize.height > self.messageTableView.frame.height){
-            var frame: CGRect = self.messageTableView.frame
-            frame.size.height = messageTableView.contentSize.height
-            self.messageTableView.frame = frame
+    func getExclusionPath(uuid: String, cell: MessageTableCell)->UIBezierPath{
+        if let sPath = self.rectMap[uuid] {
+            return sPath
+        }else{
+            let rect: CGRect = CGRect(origin: cell.username.frame.origin, size: CGSize(width: cell.username.intrinsicContentSize.width + messagePadding, height: cell.username.frame.height - subUsernamePadding))
+            let path = UIBezierPath(rect: rect)
+            rectMap[uuid] = path
+            return path
         }
-         if(self.messageTableView.contentSize.height < self.messageTableView.frame.height){
-         var frame: CGRect = self.messageTableView.frame
-         frame.size.height = messageTableView.contentSize.height
-         self.messageTableView.frame = frame
-         }
-         */
-        
-       
     }
+
     
     func addRowToTable(){
         self.messageTableView.beginUpdates()
@@ -417,7 +441,6 @@ class ChatViewController: UIViewController, MessageRecievedDelegate, ConnectionD
         self.messageTableView.insertRows(at: [indexPath], with: UITableViewRowAnimation.bottom)
         self.messageTableView.endUpdates()
         self.messageTableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-        self.adjustTableSize()
         
         
     }
@@ -445,4 +468,25 @@ extension UIColor {
             blue: CGFloat(b) / 0xff, alpha: 1
         )
     }
+}
+
+class MessageTableCell: UITableViewCell {
+    
+    
+    @IBOutlet weak var message: UITextView!
+    @IBOutlet weak var username: UILabel!
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+    }
+    
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+    }
+    
+    func loadCell(_ data: ChatMessage) {
+        username.text = data.username
+        message.text = data.content
+    }
+    
 }

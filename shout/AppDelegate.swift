@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         print("App Delegate, about to launch init")
         client.start()
         let userDefaultsDefaults = [
-            "NotiicationsActive": true,
+            "NotificationsActive": true,
             "SoundActive" : true,
             "VibrateActive": true,
         ]
