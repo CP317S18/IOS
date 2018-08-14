@@ -40,7 +40,7 @@ open class BluetoothClient: NSObject, BFTransmitterDelegate {
         
     public required override init(){
         print("Initalizing Bluetooth Client")
-        self.transmitter = BFTransmitter(apiKey: "ec174e51-a4ab-4e01-9908-fe53b2833622")
+        self.transmitter = BFTransmitter(apiKey: "268392a3-cfc9-4e6a-9bb4-9fd5a03d32ad")
         self.messsageReceiveDelegates = Array()
         self.connectionDelegates = Array()
         self.connectedDevices = 0
